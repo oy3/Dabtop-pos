@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>DABTOP</title>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="team" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="icon" type="image/png" href="images/dabtop.png">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/owl.carousel.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="css/tooplate-style.css">
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body class="primary-bg">
+
+    <!-- PRE LOADER -->
+    <section class="preloader">
+        <div class="spinner">
+            <span class="spinner-rotate"></span>
+        </div>
+    </section>
+
+    <section>
+        <div class="row">
+            <div class="col-md-9 col-md-offset-1">
+
+                <form id="view_invetory_form" class="form-horizontal">
+
+                    <h2 class="fs-title"><a href="index.html">DABTOP</a></h2>
+                    <h3 class="fs-subtitle">VIEW INVENTORY</h3>
+
+                    <table id="viewTable" class="table">
+                        <thead">
+                            <tr>
+                                <th>#</th>
+                                <th>Item Number</th>
+                                <th>Item Name</th>
+                                <th>Size(Kg)</th>
+                                <th>Quantity</th>
+                                <th>Cost Price(&#8358;)</th>
+                                <th>Selling Price(&#8358;)</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                    </table>
+                </form>
+
+            </div>
+        </div>
+
+
+
+        <!-- Modals -->
+        <!-- Edit -->
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="editModalLabel">Edit Item</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editForm">
+
+                            <!-- Error & Success Message show here -->
+                            <div class="alert alert-dismissible invisible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">&times;</span></button>
+                            </div>
+
+                            <input type="hidden" id="uid" />
+                            <div class="form-group">
+                                <label for="inputProductNumber">Product Number</label>
+                                <input type="text" class="form-control" id="inputProductNumber"
+                                    placeholder="e.g. Dabtop12345" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputProductName">Product Name</label>
+                                <input type="text" class="form-control" id="inputProductName"
+                                    placeholder="Enter Product Name">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputProductSize">Product Size</label>
+                                <input type="text" class="form-control" id="inputProductSize"
+                                    placeholder="Enter Product Size">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputProductQty">Product Quantity</label>
+                                <input type="number" class="form-control" id="inputProductQty"
+                                    placeholder="Enter Product Quantity">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputProductCost">Cost Price</label>
+                                <input type="number" class="form-control" id="inputProductCost"
+                                    placeholder="Enter Cost Price">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputProductSell">Selling Price</label>
+                                <input type="number" class="form-control" id="inputProductSell"
+                                    placeholder="Enter Selling Price">
+                            </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" id="saveBtn" class="btn btn-primary">
+                            <span id="spinner" class="spinner-border spinner-border-sm hide" role="status"
+                                aria-hidden="true"></span> Save changes
+                        </button>
+                    </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="deleteModalLabel">Are you sure?</h4>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Error & Success Message show here -->
+                        <div class="alert alert-dismissible hide" role="alert">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span aria-hidden="true">&times;</span></button>
+                        </div>
+                        Select "Delete" below if you want to delete selected item.
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <button type="button" id="deleteBtn" class="btn btn-danger">
+                            <span id="delSpinner" class="spinner-border spinner-border-sm hide" role="status"
+                                aria-hidden="true"></span> Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-functions.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-analytics.js"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/7.12.0/init.js"></script> -->
+
+    <script src="js/init-firebase.js"></script>
+
+    <!-- SCRIPTS -->
+    <script src="js/all.js"></script>
+
+    <script>
+        window.addEventListener('load', function () {
+            auth.onAuthStateChanged(user => {
+                if (!user) {
+                    // User isn't logged in.
+                    window.location.replace("login.html");
+                } else {
+                    user.getIdTokenResult().then((idTokenResult) => {
+                        // Confirm the user is an Admin.
+                        if (idTokenResult.claims.admin == false) {
+                            // Show staff UI.
+                            window.location.replace("pos.html");
+                            console.log(idTokenResult);
+                        }
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                }
+            });
+
+            getTableData()
+        });
+    </script>
+
+    <script src="js/auth.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.stellar.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/smoothscroll.js"></script>
+    <script src="js/custom.js"></script>
+
+    <script src="js/jquery.dataTables.min.js"></script>
+    <script src="js/dataTables.bootstrap4.min.js"></script>
+
+    <link href="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/css/jquery.dataTables_themeroller.css"
+        rel="stylesheet" data-semver="1.9.4" data-require="datatables@*" />
+    <link data-require="jqueryui@*" data-semver="1.10.0" rel="stylesheet"
+        href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/css/smoothness/jquery-ui-1.10.0.custom.min.css" />
+
+    <script data-require="jqueryui@*" data-semver="1.10.0"
+        src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/jquery-ui.js"></script>
+
+
+</body>
+
+</html>

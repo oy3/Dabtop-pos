@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	<title>DABTOP</title>
+
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<meta name="team" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link rel="icon" type="image/png" href="images/dabtop.png">
+
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/owl.carousel.css">
+	<link rel="stylesheet" href="css/owl.theme.default.min.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<!-- MAIN CSS -->
+	<link rel="stylesheet" href="css/tooplate-style.css">
+	<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body class="primary-bg">
+
+	<!-- PRE LOADER -->
+	<section class="preloader">
+		<div class="spinner">
+			<span class="spinner-rotate"></span>
+		</div>
+	</section>
+
+	<section>
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+
+				<form id="add_invetory_form" class="form-horizontal">
+
+					<h2 class="fs-title"><a href="index.html">DABTOP</a></h2>
+					<h3 class="fs-subtitle">ADD INVENTORY</h3>
+
+					<div class="alert alert-success alert-dismissible hidden" role="alert">
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
+					</div>
+					<div class="alert alert-danger alert-dismissible hidden" role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>
+					</div>
+
+					<input type="text" class="form-control" id="intputItemName"
+						placeholder="Enter Item Name(e.g. Toothbrush Small)" required>
+
+					<input type="text" class="form-control" id="intputItemSize"
+						placeholder="Enter Item Size(e.g. 5kg or 50L or 20ml)" required>
+
+					<input type="number" class="form-control" id="inputQuantity" placeholder="Enter Quantity" required>
+
+					<input type="number" class="form-control" id="inputCostPrice"
+						placeholder="Enter Cost Price(e.g. &#8358;10000)" required>
+
+					<input type="number" class="form-control" id="inputSellingPrice"
+						placeholder="Enter Selling Price(e.g. &#8358;10000)" required>
+
+					<button id="addInventoryBtn" type="submit"
+						class="btn btn-danger form-control active">ADD</button><br><br>
+
+				</form>
+
+			</div>
+		</div>
+	</section>
+
+
+	<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-firestore.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-analytics.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-functions.js"></script>
+	<!-- <script src="https://www.gstatic.com/firebasejs/7.12.0/init.js"></script> -->
+
+	<script src="js/init-firebase.js"></script>
+
+	<!-- SCRIPTS -->
+	<script src="js/auth.js"></script>
+	<script src="js/all.js"></script>
+	<script src="js/jquery.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/jquery.stellar.min.js"></script>
+	<script src="js/owl.carousel.min.js"></script>
+	<script src="js/smoothscroll.js"></script>
+	<script src="js/custom.js"></script>
+
+	<script>
+		window.addEventListener('load', function () {
+			auth.onAuthStateChanged(user => {
+				if (!user) {
+					// User isn't logged in.
+					window.location.replace("login.html");
+				} else {
+					user.getIdTokenResult().then((idTokenResult) => {
+						// Confirm the user is an Admin.
+						if (idTokenResult.claims.admin == false) {
+							// Show staff UI.
+							window.location.replace("pos.html");
+							console.log(idTokenResult);
+						}
+					}).catch((error) => {
+						console.log(error);
+					});
+				}
+			});
+		});
+	</script>
+</body>
+
+</html>

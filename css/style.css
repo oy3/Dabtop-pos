@@ -1,0 +1,444 @@
+/* #viewTable {
+    counter-reset: rowNumber -1;
+}
+
+#viewTable tr {
+    counter-increment: rowNumber;
+}
+
+#viewTable tr td:first-child::before {
+    content: counter(rowNumber);
+    min-width: 1em;
+    margin-right: 0.5em;
+} */
+
+#calcTable, #cardtbl, #cashtbl {
+    counter-reset: Serial;
+}
+
+#calcTable tr td:first-child:before, #cardtbl tr td:first-child:before, #cashtbl tr td:first-child:before {
+    counter-increment: Serial;
+    content: counter(Serial);
+}
+
+/*custom font*/
+
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+form .input-error {
+    border-color: #d03e3e;
+    color: #d03e3e;
+}
+
+/*progressbar*/
+
+#progressbar {
+    margin-bottom: 30px;
+    overflow: hidden;
+    /*CSS counters to number the steps*/
+    counter-reset: step;
+}
+
+#progressbar li {
+    text-align: center;
+    list-style-type: none;
+    color: black;
+    text-transform: uppercase;
+    font-size: 9px;
+    width: 25%;
+    float: left;
+    position: relative;
+    letter-spacing: 1px;
+}
+
+#progressbar li:before {
+    content: counter(step);
+    counter-increment: step;
+    width: 24px;
+    height: 24px;
+    line-height: 26px;
+    display: block;
+    font-size: 12px;
+    color: white;
+    background: gray;
+    border-radius: 25px;
+    margin: 0 auto 10px auto;
+}
+
+/*progressbar connectors*/
+
+#progressbar li:after {
+    content: '';
+    width: 100%;
+    height: 2px;
+    background: gray;
+    position: absolute;
+    left: -50%;
+    top: 9px;
+    z-index: -1;
+    /*put it behind the numbers*/
+}
+
+#progressbar li:first-child:after {
+    /*connector not needed before the first step*/
+    content: none;
+}
+
+/*marking active/completed steps green*/
+
+/*The number of the step and the connector before it = green*/
+
+#progressbar li.active:before, #progressbar li.active:after {
+    background: #ee0979;
+    color: white;
+}
+
+#view_invetory_form {
+    background: white;
+    border: 0 none;
+    border-radius: 0px;
+    box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+    padding: 20px 30px;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0 10%;
+}
+
+/*Login Form, Add invetory Form*/
+
+#login_form, #add_invetory_form, #normal_form, #forgotPwdForm {
+    background: white;
+    border: 0 none;
+    border-radius: 0px;
+    box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+    padding: 20px 30px;
+    box-sizing: border-box;
+    width: 80%;
+    margin: 0 10%;
+    text-align: center;
+}
+
+/*inputs*/
+
+#login_form input, #add_invetory_form input, #normal_form input, #add_invetory_form textarea {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 0px;
+    margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: montserrat;
+    color: #2C3E50;
+    font-size: 13px;
+}
+
+#add_invetory_form select {
+    border: 1px solid #ccc;
+    border-radius: 0px;
+    margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: montserrat;
+    color: #2C3E50;
+    font-size: 13px;
+}
+
+#login_form input:focus, #add_invetory_form input:focus, #normal_form input:focus, #add_invetory_form textarea:focus {
+    -moz-box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    border: 1px solid #ee0979;
+    outline-width: 0;
+    transition: All 0.5s ease-in;
+    -webkit-transition: All 0.5s ease-in;
+    -moz-transition: All 0.5s ease-in;
+    -o-transition: All 0.5s ease-in;
+}
+
+/*headings*/
+
+.fs-title {
+    font-size: 18px;
+    text-transform: uppercase;
+    color: #2C3E50;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.fs-subtitle {
+    font-weight: normal;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.primary-bg {
+    background: #b62b36;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #b62b36, #c24d57);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #b62b36, #c24d57);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    opacity: 0.9;
+}
+
+.modules {
+    background: white;
+    border: 0 none;
+    border-radius: 0px;
+    box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+    padding: 20px 30px;
+    box-sizing: border-box;
+    width: 50%;
+    margin: 0 10%;
+    text-align: center;
+}
+
+.brand {
+    display: inline-block;
+    text-decoration: none;
+    color: black;
+    font-family: Montserrat;
+    font-weight: bold;
+    padding-left: 42px;
+    padding-right: 42px;
+    background: url("../images/dabtop.png") no-repeat 0 50%;
+    /* background: radial-gradient(circle, #d01423, #d01423 50%, transparent 50%) no-repeat 0 50%; */
+    /* content:url("../images/dabtop.png"); */
+    background-size: 36px 40px;
+}
+
+.name {
+    font-weight: bold;
+    font-size: 20px;
+    color: #d01423;
+}
+
+.company {
+    font-size: 12px;
+    color: #49494c;
+}
+
+.calculator {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 400px;
+}
+
+.calculator input {
+    width: 90%;
+    height: 100%;
+    border: none;
+    background-color: #252525;
+    color: #fff;
+    text-align: right;
+    padding-right: 20px;
+    padding-left: 10px;
+    font-size: 100%;
+}
+
+/* .calculator-screen {
+    width: 90%;
+    height: 100%;
+    border: none;
+    background-color: #252525;
+    color: #fff;
+    text-align: right;
+    padding-right: 20px;
+    padding-left: 10px;
+    font-size: 100%;
+} */
+
+.equal-sign {
+    height: 98%;
+    grid-area: 2 / 4 / 6 / 5;
+}
+
+.calculator-keys {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 20px;
+    padding: 20px;
+}
+
+@-webkit-keyframes spinner-border {
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+@keyframes spinner-border {
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+.spinner-border {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    vertical-align: text-bottom;
+    border: .25em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    -webkit-animation: spinner-border .75s linear infinite;
+    animation: spinner-border .75s linear infinite
+}
+
+.spinner-border-sm {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-width: .2em
+}
+
+@-webkit-keyframes spinner-grow {
+    0% {
+        transform: scale(0)
+    }
+    50% {
+        opacity: 1
+    }
+}
+
+@keyframes spinner-grow {
+    0% {
+        transform: scale(0)
+    }
+    50% {
+        opacity: 1
+    }
+}
+
+.spinner-grow {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    vertical-align: text-bottom;
+    background-color: currentColor;
+    border-radius: 50%;
+    opacity: 0;
+    -webkit-animation: spinner-grow .75s linear infinite;
+    animation: spinner-grow .75s linear infinite
+}
+
+.spinner-grow-sm {
+    width: 1rem;
+    height: 1rem
+}
+
+/* Print Receipt */
+
+.receipt {
+    /* display: block; */
+    max-width: 70mm;
+    width: 70mm;
+    background: #FFF;
+    font-size: 14px;
+    font-family: Arial;
+    margin: 0px;
+    color: black;
+}
+
+.receipt .title {
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.receipt .address {
+    text-align: center;
+    font-style: italic;
+    font-size: 70%;
+    border-bottom: 1px solid #4C4C4C;
+    padding-bottom: 5px;
+}
+
+.receipt .timestamp {
+    margin-bottom: 5px;
+}
+
+.receipt .timestamp h5 {
+    font-size: 90%;
+}
+
+.receipt .timestamp span {
+    float: right;
+}
+
+.receipt td, th, tr, table {
+    border-top: 1px solid black;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.receipt td.sn, th.sn {
+    width: 10%;
+    max-width: 10%;
+    font-size: 90%;
+}
+
+.receipt td.description, th.description {
+    width: 50%;
+    max-width: 50%;
+    font-size: 90%;
+    text-transform: capitalize;
+    /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
+}
+
+.receipt td.quantity, th.quantity {
+    text-align: center;
+    width: 20%;
+    max-width: 20%;
+    word-break: break-all;
+}
+
+.receipt td.price, th.price {
+    text-align: center;
+    width: 20%;
+    max-width: 20%;
+    word-break: break-all;
+}
+
+.receipt .receiptFoot span {
+    float: right;
+    font-weight: bold;
+}
+
+.receipt .legal {
+    border-top: 1px solid #4C4C4C;
+    margin-top: 5px;
+    text-align: center;
+    border-bottom: 1px solid #4C4C4C;
+}
+
+.receipt .legal h5 {
+    font-size: 79%;
+}
+
+.receipt img {
+    max-width: inherit;
+    width: 90%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.receiptBorder {
+    border-style: solid;
+    padding: 2mm;
+    width: 75mm;
+    margin: 0 auto;
+    color: black;
+}
+
+#receiptPreview img{
+    width: auto;
+    height: 60px;
+}
+
+#receiptPreviewCash img{
+    width: auto;
+    height: 60px; 
+}

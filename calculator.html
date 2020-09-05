@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <title>Calculator</title>
+
+    <style>
+        body {
+            background-color: powderblue;
+        }
+
+        h1 {
+            color: blue;
+        }
+
+        p {
+            color: red;
+        }
+
+        .calculator {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 400px;
+        }
+
+        .calculator input {
+            width: 90%;
+            height: 100%;
+            border: none;
+            background-color: #252525;
+            color: #fff;
+            text-align: right;
+            padding-right: 20px;
+            padding-left: 10px;
+            font-size: 100%;
+        }
+
+
+        .calculator-keys {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 20px;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="calculator card">
+        <table class="text-center">
+            <tr>
+                <th class="text-center small">Balance Due</th>
+                <th class="text-center small">Amount Tendered</th>
+                <th class="text-center small">Change</th>
+            </tr>
+            <tr>
+                <td><input type="text" class="z-depth-1" value="" disabled /></td>
+                <td><input id="amountT" type="text" class="calculator-screen z-depth-1" value="" disabled /></td>
+                <td><input type="text" class="z-depth-1" value="" disabled /></td>
+            </tr>
+        </table>
+
+        <div class="calculator-keys">
+            <button type="button" value="7" class="btn btn-light waves-effect">7</button>
+            <button type="button" value="8" class="btn btn-light waves-effect">8</button>
+            <button type="button" value="9" class="btn btn-light waves-effect">9</button>
+            <button type="button" value="1000" class="btn btn-light waves-effect">&#8358;1000</button>
+
+
+            <button type="button" value="4" class="btn btn-light waves-effect">4</button>
+            <button type="button" value="5" class="btn btn-light waves-effect">5</button>
+            <button type="button" value="6" class="btn btn-light waves-effect">6</button>
+            <button type="button" value="500" class="btn btn-light waves-effect">&#8358;500</button>
+
+
+            <button type="button" value="1" class="btn btn-light waves-effect">1</button>
+            <button type="button" value="2" class="btn btn-light waves-effect">2</button>
+            <button type="button" value="3" class="btn btn-light waves-effect">3</button>
+            <button type="button" value="200" class="btn btn-light waves-effect">&#8358;200</button>
+
+
+            <button type="button" class="all-clear function btn btn-danger btn-sm" value="all-clear">AC</button>
+            <button type="button" value="0" class="btn btn-light waves-effect">0</button>
+            <button type="button" class="decimal function btn btn-secondary" value=".">.</button>
+            <button type="button" class="function btn btn-secondary">Backspace</button>
+
+        </div>
+    </div>
+
+
+    <script>
+function setBack() {
+    var elem = document.getElementById('amountT');
+    var pos = getInputSelection(elem).start;
+    elem.value = elem.value.substring(0, pos - !!(elem.value.length - pos - 1)) + elem.value.substring(pos)
+    elem.setSelectionRange(elem.value.length, pos - !!(elem.value.length - pos));
+    elem.focus();
+}
+
+function getInputSelection(el) {
+    var start = 0,
+        end = 0,
+        normalizedValue, range,
+        textInputRange, len, endRange;
+    if (typeof el.selectionStart == "number" && typeof el.selectionEnd == "number") {
+        start = el.selectionStart;
+        end = el.selectionEnd;
+    } else {
+        range = document.selection.createRange();
+        if (range && range.parentElement() == el) {
+            len = el.value.length;
+            normalizedValue = el.value.replace(/\r\n/g, "\n");
+            textInputRange = el.createTextRange();
+            textInputRange.moveToBookmark(range.getBookmark());
+            endRange = el.createTextRange();
+            endRange.collapse(false);
+            if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+                start = end = len;
+            } else {
+                start = -textInputRange.moveStart("character", -len);
+                start += normalizedValue.slice(0, start).split("\n").length - 1;
+                if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
+                    end = len;
+                } else {
+                    end = -textInputRange.moveEnd("character", -len);
+                    end += normalizedValue.slice(0, end).split("\n").length - 1;
+                }
+            }
+        }
+    }
+    return {
+        start: start,
+        end: end
+    };
+}
+    </script>
+
+    <!-- JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

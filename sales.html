@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>DABTOP</title>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="team" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" type="image/png" href="images/dabtop.png">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/owl.carousel.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="css/tooplate-style.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Data tables -->
+    <link href="css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+</head>
+
+<body class="primary-bg">
+
+    <!-- PRE LOADER -->
+    <section class="preloader">
+        <div class="spinner">
+
+            <span class="spinner-rotate"></span>
+
+        </div>
+    </section>
+
+    <!-- MENU -->
+    <div class="container">
+        <nav class="navbar navbar-fixed-top navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon icon-bar"></span>
+                        <span class="icon icon-bar"></span>
+                        <span class="icon icon-bar"></span>
+                    </button>
+
+                    <a class="brand" href="#">
+                        <div class="name">DABTOP</div>
+                        <div class="company">OIL&GAS LIMITED</div>
+                    </a>
+                </div>
+
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">Home</a></li>
+                        <li><a href="#">Page 1</a></li>
+                        <li><a href="#">Others</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a id="logoutBtn" href="#"><span class="fa fa-sign-out"></span>Log Out</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </nav>
+    </div>
+
+    <!-- VIEW INVENTORY PRICE -->
+    <section id="" data-stellar-background-ratio="0.5">
+        <div class="row">
+            <div class="col-md-9 col-md-offset-1">
+
+                <form id="view_invetory_form" class="form-horizontal">
+                    <h3 class="fs-title">VIEW INVENTORY PRICE</h3>
+
+                    <table id="priceTable" class="table table-striped table-hover">
+                        <thead">
+                            <tr>
+                                <th>Item Number</th>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Price (&#8358;)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                            <tfoot>
+                                <th>Item Number</th>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Price (&#8358;)</th>
+                            </tfoot>
+                    </table>
+                </form>
+
+            </div>
+        </div>
+    </section>
+
+
+    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-functions.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-analytics.js"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/7.12.0/init.js"></script> -->
+
+    <script src="js/init-firebase.js"></script>
+
+    <!-- SCRIPTS -->
+    <script src="js/all.js"></script>
+    <script>
+        window.addEventListener('load', function () {
+            // auth.onAuthStateChanged(user => {
+            //     user.getIdTokenResult().then((idTokenResult) => {
+            //         // Confirm the user is an Admin.
+            //         if (!!idTokenResult.claims.admin) {
+            //             // Show admin UI.
+            //             window.open('index.html');
+            //             window.parent.close();
+            //         } else {
+            //             // Show regular user UI.
+            //             window.open('sales.html');
+            //             window.parent.close();
+            //         }
+            //     }).catch((error) => {
+            //         console.log(error);
+            //     });
+            // });
+
+            auth.onAuthStateChanged(user => {
+                if (!user) {
+                    // User isn't logged in.
+                    window.location.replace("login.html");
+                }
+            });
+
+            getPriceData()
+        });
+    </script>
+    <script src="js/auth.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.stellar.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/smoothscroll.js"></script>
+    <script src="js/custom.js"></script>
+
+    <script src="js/jquery.dataTables.min.js"></script>
+    <script src="js/dataTables.bootstrap4.min.js"></script>
+
+    <link href="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/css/jquery.dataTables_themeroller.css"
+        rel="stylesheet" data-semver="1.9.4" data-require="datatables@*" />
+    <link data-require="jqueryui@*" data-semver="1.10.0" rel="stylesheet"
+        href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/css/smoothness/jquery-ui-1.10.0.custom.min.css" />
+
+    <script data-require="jqueryui@*" data-semver="1.10.0"
+        src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/jquery-ui.js"></script>
+
+
+
+</body>
+
+</html>
