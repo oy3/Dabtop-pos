@@ -1,4 +1,4 @@
-var checkoutData = []
+var checkoutData = [];
 
 var currentUserUid
 auth.onAuthStateChanged(function (user) {
@@ -176,39 +176,26 @@ function getTableData() {
     var datas = new Array();
 
     // Get table data from firestore : Real-time listener
-    db.collection('inventories').orderBy('productNumber').onSnapshot(snapshot => {
-        let changes = snapshot.docChanges();
-        // document.getElementById("no_of_news").textContent = snapshot.size;
+    db.collection('inventories').orderBy('productNumber').onSnapshot(function (snapshot) {
+        // let changes = snapshot.docChanges();
 
-        changes.forEach(change => {
-            if (change.type == 'added') {
-                datas.push([
-                    "",
-                    change.doc.id,
-                    change.doc.data().productNumber,
-                    change.doc.data().productName,
-                    change.doc.data().productSize,
-                    change.doc.data().productQuanity,
-                    change.doc.data().productCostPrice,
-                    change.doc.data().productSellingPrice]);
-            }
-            if (change.type == 'modified') {
-                console.log("Modified item: ", change.doc.data());
-                setTimeout(function () {
-                    // $('.alert').addClass('invisible');
-                    location.reload();
-                }, 2000);
-            }
-            if (change.type == 'removed') {
-                console.log("Removed item: ", change.doc.data());
-                setTimeout(function () {
-                    location.reload();
-                }, 2000);
-            }
-
-            var source = snapshot.metadata.fromCache ? "local cache" : "server";
-            console.log("Data came from " + source);
+        datas = [];
+        snapshot.forEach(function (doc) {
+            datas.push([
+                "",
+                doc.id,
+                doc.data().productNumber,
+                doc.data().productName,
+                doc.data().productSize,
+                doc.data().productQuanity,
+                doc.data().productCostPrice,
+                doc.data().productSellingPrice]);
         });
+
+        // console.log("Inventory Array: ", datas);
+        var source = snapshot.metadata.fromCache ? "local cache" : "server";
+        // console.log("Data came from " + source);
+
 
         const inventoryTable = $('#viewTable').DataTable({
             data: datas,
@@ -387,6 +374,7 @@ function getPriceData() {
                     change.doc.data().productNumber,
                     change.doc.data().productName,
                     change.doc.data().productQuanity,
+                    change.doc.data().productSize,
                     change.doc.data().productSellingPrice]);
             }
         });
@@ -396,9 +384,10 @@ function getPriceData() {
             destroy: true,
             order: [1, "asc"],
             columns: [
-                { title: 'Item Number' },
+                { title: 'Item Number', "visible": false },
                 { title: 'Item Name' },
-                { title: 'Quantity' },
+                { title: 'Quantity', "visible": false },
+                { title: 'Size' },
                 { title: 'Price' },
                 { title: 'Action' }
             ],
@@ -459,8 +448,8 @@ function addDataToTbody(table, data) { // table -> NodeList, data -> array with 
 
         //Product Name
         cell2.innerHTML = data[i].product;
-        //Quantity
-        cell3.innerHTML = `<input style='width: 50%;' type='number'  min='1' max='${checkoutData[i].maxqty}'  value='${checkoutData[i].quantity}' onchange='updateCost(this.value, "${data[i].id}")'> x &#8358;` + data[i].sellingprice;
+        //Quantity max='${checkoutData[i].maxqty}'
+        cell3.innerHTML = `<input style='width: 50%;' type='number'  min='1'  value='${checkoutData[i].quantity}' onchange='updateCost(this.value, "${data[i].id}")'> x &#8358;` + data[i].sellingprice;
         //Subtotal
         cell4.className = "subtotal";
         cell4.innerHTML = data[i].quantity * data[i].sellingprice;
@@ -583,6 +572,14 @@ function clearRows() {
     for (var x = rowCount - 1; x > 0; x--) {
         myTable.deleteRow(x);
     }
+
+    if (checkoutData === undefined || checkoutData.length == 0) {
+        $("#cashBtn").attr("disabled", "true");
+        $("#cardBtn").attr("disabled", "true");
+    } else {
+        $("#cashBtn").removeAttr("disabled");
+        $("#cardBtn").removeAttr("disabled");
+    }
 }
 
 //Add admin cloud functions
@@ -695,18 +692,36 @@ function updateDisplay() {
     display.value = calculator.displayValue;
 }
 
-updateDisplay();
+function addValue(value) {
+    const { firstOperand, displayValue, operator } = calculator
+    const inputValue = parseFloat(displayValue);
+    if (value == 1000) {
+        calculator.displayValue = inputValue + 1000;
+    } else if (value == 500) {
+        calculator.displayValue = inputValue + 500;
+    } else if (value == 200) {
+        calculator.displayValue = inputValue + 200;
+    }
+}
 
 const keys = document.querySelector('.calculator-keys');
-keys.addEventListener('click', (event) => {
+keys?.addEventListener('click', (event) => {
     const { target } = event;
     if (!target.matches('button')) {
+        check();
+        return;
+    }
+    if (target.classList.contains('predefined')) {
+        addValue(target.value);
+        updateDisplay();
+        check();
         return;
     }
 
     if (target.classList.contains('operator')) {
         handleOperator(target.value);
         updateDisplay();
+        check();
         return;
     }
 
@@ -719,32 +734,31 @@ keys.addEventListener('click', (event) => {
     if (target.classList.contains('all-clear')) {
         resetCalculator();
         updateDisplay();
+        check();
         return;
     }
 
     if (target.classList.contains('sendBtn')) {
         changeCalculations();
         updateDisplay();
+        check();
         return;
     }
 
     inputDigit(target.value);
     updateDisplay();
-
+    check();
 });
 
 
 function changeCalculations() {
     var total = document.getElementById("totalAmount").value;
-
     var givenAmount = document.getElementById("amountT").value;
-
     var change = givenAmount - total;
-    document.getElementById("cChange").value = change;
 
+    document.getElementById("cChange").value = change;
     document.getElementById("givenTxt").innerHTML = givenAmount;
     document.getElementById("changeTxt").innerHTML = change;
-
 }
 
 function payCash(button) {
@@ -763,6 +777,7 @@ function payCash(button) {
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(docRef => {
         console.log('Added  docId to server= ' + docRef.id);
+        checkoutData = [];
     }).catch(function (error) {
         button.removeAttribute("disabled");
         $(this.spinner).addClass('hide');
@@ -793,11 +808,11 @@ function payCash(button) {
 
     $('#receiptTimeCash').html(dateTime);
     // $('#receiptIDCash').html('#' + docRef.id);
-    $('#receiptIDCash').html('#001');
+    // $('#receiptIDCash').html('#001');
 
     $('#receiptTotalCash').html('&#8358;' + $("#lbltotalprice").html());
-    $('#receiptPaidCash').html('&#8358;' + document.getElementById("amountT").value);
-    $('#receiptChangeCash').html('&#8358;' + document.getElementById("cChange").value);
+    $('#receiptPaidCash').html('&#8358;' + $("#givenTxt").html());
+    $('#receiptChangeCash').html('&#8358;' + $("#changeTxt").html());
 
     //Show print button
     button.classList.add("hide");
@@ -850,7 +865,7 @@ function pay(button) {
     $('#tablePreview').addClass('hide');
 
     $('#receiptTime').html(dateTime);
-    $('#receiptID').html('#001');
+    // $('#receiptID').html('#001');
 
 
     //Show print button
@@ -946,3 +961,18 @@ function endPrompt() {
 function autoRefresh(t) {
     setTimeout("location.reload(true);", t);
 }
+
+
+function check() {
+    const total = parseInt(document.getElementById("totalAmount").value);
+    const given = parseInt(document.getElementById("amountT").value);
+    const btn = document.getElementById("cashPayBtn");
+
+    if (given >= total) {
+        btn.removeAttribute("disabled");
+    } else {
+        btn.setAttribute("disabled", "");
+    }
+}
+
+check();

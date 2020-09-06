@@ -102,17 +102,17 @@
                             </div>
                             <div class="form-group">
                                 <label for="inputProductQty">Product Quantity</label>
-                                <input type="number" class="form-control" id="inputProductQty"
+                                <input type="number" step="any" class="form-control" id="inputProductQty"
                                     placeholder="Enter Product Quantity">
                             </div>
                             <div class="form-group">
                                 <label for="inputProductCost">Cost Price</label>
-                                <input type="number" class="form-control" id="inputProductCost"
+                                <input type="number" step="any" class="form-control" id="inputProductCost"
                                     placeholder="Enter Cost Price">
                             </div>
                             <div class="form-group">
                                 <label for="inputProductSell">Selling Price</label>
-                                <input type="number" class="form-control" id="inputProductSell"
+                                <input type="number" step="any" class="form-control" id="inputProductSell"
                                     placeholder="Enter Selling Price">
                             </div>
 
@@ -194,7 +194,14 @@
                 }
             });
 
-            getTableData()
+            getTableData();
+
+            function updateDisplay() {
+                const display = document.querySelector('.calculator-screen');
+                display.value = calculator.displayValue;
+            }
+
+       
         });
     </script>
 
