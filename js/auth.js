@@ -15,7 +15,7 @@ auth.onAuthStateChanged(user => {
             user.admin = idTokenResult.claims.admin;
         });
 
-        console.log('user logged in: ', user);
+        // console.log('user logged in: ', user);
     } else {
         // User is signed out.
         console.log('user logged out');

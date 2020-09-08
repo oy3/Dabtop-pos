@@ -58,8 +58,8 @@
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li class="active"><a href="pos.html">Home</a></li>
-                        <!-- <li><a>View Today's Sales</a></li>
-                        <li><a onclick="startPrompt()">Start day</a></li>
+                        <!-- <li><a>View Today's Sales</a></li> -->
+                        <!-- <li><a onclick="startPrompt()">Start day</a></li>
                         <li><a onclick="endPrompt()">End day</a></li> -->
                     </ul>
 
@@ -181,7 +181,7 @@
 
                                 <div class="timestamp">
                                     <h5>Timestamp: <span id="receiptTime">07/07/2020 11:04 PM</span></h5>
-                                    <h5>Cashier: <span>Toyosi</span></h5>
+                                    <h5>Cashier: <span style="width: 50%;" id="cashierName"></span></h5>
                                     <!-- <h5>Id: <span id="receiptID"></span></h5> -->
                                 </div>
 
@@ -343,8 +343,8 @@
                                     <br>+234 701 228 1956</h5>
 
                                 <div class="timestamp">
-                                    <h5>Timestamp: <span id="receiptTimeCash">07/07/2020 11:04 PM</span></h5>
-                                    <h5>Cashier: <span>Toyosi</span></h5>
+                                    <h5>Timestamp: <span id="receiptTimeCash"></span></h5>
+                                    <h5>Cashier: <span style="width: 50%;" id="cashierNameCash"></span></h5>
                                     <!-- <h5>Id: <span id="receiptIDCash"></span></h5> -->
                                 </div>
 
@@ -394,11 +394,11 @@
     <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-functions.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-functions.js"></script>
     <!-- <script src="https://www.gstatic.com/firebasejs/7.12.0/init.js"></script> -->
-    <script src="js/init-firebase.js"></script>
 
+    <script src="js/init-firebase.js"></script>
     <script src="js/all.js"></script>
 
     <script>
@@ -463,13 +463,12 @@
     <script src="js/jquery.dataTables.min.js"></script>
     <script src="js/dataTables.bootstrap4.min.js"></script>
 
-    <link href="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/css/jquery.dataTables_themeroller.css"
-        rel="stylesheet" data-semver="1.9.4" data-require="datatables@*" />
-    <link data-require="jqueryui@*" data-semver="1.10.0" rel="stylesheet"
-        href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/css/smoothness/jquery-ui-1.10.0.custom.min.css" />
+    <link href="css/jquery.dataTables_themeroller.css" rel="stylesheet" data-semver="1.9.4"
+        data-require="datatables@*" />
 
-    <script data-require="jqueryui@*" data-semver="1.10.0"
-        src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/jquery-ui.js"></script>
+    <link data-require="jqueryui@*" data-semver="1.10.0" rel="stylesheet" href="css/jquery-ui-1.10.0.custom.min.css" />
+
+    <script data-require="jqueryui@*" data-semver="1.10.0" src="js/jquery-ui.js"></script>
 
     <script src="js/print.min.js"></script>
 

@@ -1,11 +1,24 @@
-var checkoutData = [];
+// import { auth } from './firebase/firebase-auth.js';
 
-var currentUserUid
+var checkoutData = [];
+var dataSet = new Array();
+
+var currentUserUid;
+var sellerName;
 auth.onAuthStateChanged(function (user) {
     if (user) {
         // User is signed in.
-        currentUserUid = user.uid
+        currentUserUid = user.uid;
+        sellerName = user.displayName;
 
+        // user.updateProfile({
+        //     displayName: "Oyeyinka Temitope"
+        // }).then(function () {
+        //     // Update successful.
+        //     console.log("success", user.displayName);
+        // }).catch(function (error) {
+        //     // An error happened.
+        // });
     }
 });
 
@@ -29,6 +42,9 @@ const setupUi = (user) => {
 const loginForm = document.querySelector('#login_form');
 loginForm?.addEventListener('submit', (e) => {
     e.preventDefault();
+    const btn = loginForm['loginBtn'];
+
+    btn.setAttribute("disabled", "true");
 
     //get user info
     const email = loginForm['inputEmail'].value;
@@ -45,16 +61,19 @@ loginForm?.addEventListener('submit', (e) => {
                 if (idTokenResult.claims.admin == true) {
                     // Show admin UI.
                     window.location.replace("index.html");
+                    btn.removeAttribute("disabled");
                     // window.open('index.html');
                     // window.parent.close();
                 } else {
                     // Show regular user UI.
                     startPrompt();
+                    btn.removeAttribute("disabled");
 
                     // window.open('pos.html');
                     // window.parent.close();
                 }
             }).catch((error) => {
+                btn.removeAttribute("disabled");
                 console.log(error);
             });
         });
@@ -62,7 +81,7 @@ loginForm?.addEventListener('submit', (e) => {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
-
+        btn.removeAttribute("disabled");
         if (errorCode === 'auth/wrong-password') {
             $('.alert-success').addClass('hidden');
             $('.alert-danger').text('Wrong username or password').removeClass('hidden');
@@ -363,8 +382,6 @@ function getTableData() {
 }
 
 function getPriceData() {
-    var dataSet = new Array();
-
     // Get news from firestore: Real-time listener
     db.collection('inventories').orderBy('productNumber').onSnapshot(snapshot => {
         let changes = snapshot.docChanges();
@@ -384,7 +401,7 @@ function getPriceData() {
             destroy: true,
             order: [1, "asc"],
             columns: [
-                { title: 'Item Number', "visible": false },
+                { title: 'Item Number' },
                 { title: 'Item Name' },
                 { title: 'Quantity', "visible": false },
                 { title: 'Size' },
@@ -411,9 +428,9 @@ function getPriceData() {
                 id: data[0],
                 product: data[1],
                 quantity: 1,
-                maxqty: data[2],
+                // maxqty: data[2],
                 price: 0,
-                sellingprice: data[3],
+                sellingprice: data[4],
             });
 
             var table = document.querySelector("#calcTable tbody");
@@ -421,7 +438,7 @@ function getPriceData() {
 
             clear(table);
             addDataToTbody(table, checkoutData);
-            console.log(checkoutData);
+            // console.log(checkoutData);
         });
 
     });
@@ -429,7 +446,6 @@ function getPriceData() {
 
 function addDataToTbody(table, data) { // table -> NodeList, data -> array with objects
     if (checkoutData === undefined || checkoutData.length == 0) {
-        // array empty or does not exist
         $("#cashBtn").attr("disabled", "true");
         $("#cardBtn").attr("disabled", "true");
     } else {
@@ -455,7 +471,7 @@ function addDataToTbody(table, data) { // table -> NodeList, data -> array with 
         cell4.innerHTML = data[i].quantity * data[i].sellingprice;
         data[i].price = data[i].quantity * data[i].sellingprice;
         //Delete button
-        cell5.innerHTML = "<button class='btn btn-sm btn-danger' onclick='deleteRowById(this)'><span class='fa fa-trash-o'></span></button>";
+        cell5.innerHTML = `<button class='btn btn-sm btn-danger' type='button' onclick='deleteRowById(this, "${data[i].id}")'><span class='fa fa-trash-o'></span></button>`;
 
         table.appendChild(tr);
     });
@@ -543,11 +559,26 @@ function deleteRowById(r, id) {
 
     checkoutData.forEach((product, index) => {
         if (product.id == id) {
-            // checkoutData[index].quantity = count;
-            checkoutData.remove(index);
+            sumColumn();
+            checkoutData.splice(index, 1);
+
+            dataSet.forEach((product, index) => {
+                if (product[0] == id) {
+                    var table = $('#priceTable').DataTable();
+                    var data = table.row(index).node().getElementsByTagName('button');
+                    data[0].disabled = false;
+                }
+            });
         }
     });
 
+    if (checkoutData === undefined || checkoutData.length == 0) {
+        $("#cashBtn").attr("disabled", "true");
+        $("#cardBtn").attr("disabled", "true");
+    } else {
+        $("#cashBtn").removeAttr("disabled");
+        $("#cardBtn").removeAttr("disabled");
+    }
 }
 
 function deleteRow(r) {
@@ -761,22 +792,29 @@ function changeCalculations() {
     document.getElementById("changeTxt").innerHTML = change;
 }
 
+function fullDateTime() {
+    var d = new Date();
+    document.getElementById("demo2").innerHTML = n;
+}
+
 function payCash(button) {
     $(this.spinner).removeClass('hide');
     button.setAttribute("disabled", "true");
 
     var today = new Date();
     var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
-    var date2 = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
-    var time = today.getHours() + ":" + today.getMinutes();
-    var dateTime = date2 + ' ' + time;
+    // var date2 = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+    // var time = today.getHours() + ":" + today.getMinutes();
+    // var dateTime = date2 + ' ' + time;
+    var now = today.toLocaleString([], { hour12: true });
+
 
     db.collection('sales').doc(date).collection("items").add({
         items: checkoutData,
         total: document.getElementById("lbltotalprice").innerHTML,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(docRef => {
-        console.log('Added  docId to server= ' + docRef.id);
+        // console.log('Added  docId to server= ' + docRef.id);
         checkoutData = [];
     }).catch(function (error) {
         button.removeAttribute("disabled");
@@ -796,7 +834,7 @@ function payCash(button) {
     });
 
 
-    console.log('Added  docId to cache');
+    // console.log('Added  docId to cache');
 
     button.removeAttribute("disabled");
     $(this.spinner).addClass('hide');
@@ -806,7 +844,8 @@ function payCash(button) {
     $('#receiptPreviewCash').removeClass('hide');
     $('#tablePreviewCash').addClass('hide');
 
-    $('#receiptTimeCash').html(dateTime);
+    $('#receiptTimeCash').html(now);
+    $('#cashierNameCash').html(sellerName);
     // $('#receiptIDCash').html('#' + docRef.id);
     // $('#receiptIDCash').html('#001');
 
@@ -827,16 +866,18 @@ function pay(button) {
 
     var today = new Date();
     var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
-    var date2 = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
-    var time = today.getHours() + ":" + today.getMinutes();
-    var dateTime = date2 + ' ' + time;
+    // var date2 = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+    // var time = today.getHours() + ":" + today.getMinutes();
+    // var dateTime = date2 + ' ' + time;
+    var now = today.toLocaleString([], { hour12: true });
 
     db.collection('sales').doc(date).collection("items").add({
         items: checkoutData,
         total: document.getElementById("lbltotalprice").innerHTML,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(docRef => {
-        console.log('Added  docId to server= ' + docRef.id);
+        // console.log('Added  docId to server= ' + docRef.id);
+        // console.log('Added  docId to server');
     }).catch(function (error) {
         button.removeAttribute("disabled");
         $(this.spinner).addClass('hide');
@@ -854,7 +895,7 @@ function pay(button) {
         console.log(error);
     });
 
-    console.log('Added  docId to cache');
+    // console.log('Added  docId to cache');
 
     button.removeAttribute("disabled");
     $(this.spinner).addClass('hide');
@@ -864,7 +905,8 @@ function pay(button) {
     $('#receiptPreview').removeClass('hide');
     $('#tablePreview').addClass('hide');
 
-    $('#receiptTime').html(dateTime);
+    $('#receiptTime').html(now);
+    $('#cashierName').html(sellerName);
     // $('#receiptID').html('#001');
 
 
@@ -928,6 +970,7 @@ function startPrompt() {
         });
 
     } else {
+        auth.signOut();
         alert('Comeback again');
     }
 }
@@ -965,7 +1008,7 @@ function autoRefresh(t) {
 
 function check() {
     const total = parseInt(document.getElementById("totalAmount").value);
-    const given = parseInt(document.getElementById("amountT").value);
+    const given = parseInt(document.getElementById("givenTxt").innerHTML);
     const btn = document.getElementById("cashPayBtn");
 
     if (given >= total) {
