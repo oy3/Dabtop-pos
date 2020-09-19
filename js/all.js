@@ -802,7 +802,8 @@ function payCash(button) {
     button.setAttribute("disabled", "true");
 
     var today = new Date();
-    var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
+    let date = new Date().toISOString().slice(0, 10);
+    // var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
     // var date2 = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
     // var time = today.getHours() + ":" + today.getMinutes();
     // var dateTime = date2 + ' ' + time;
@@ -811,6 +812,7 @@ function payCash(button) {
 
     db.collection('sales').doc(date).collection("items").add({
         items: checkoutData,
+        type: "Cash",
         total: document.getElementById("lbltotalprice").innerHTML,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(docRef => {
@@ -864,8 +866,11 @@ function pay(button) {
     // $('.spinner').removeClass('hide');
     button.setAttribute("disabled", "true");
 
+    let date = new Date().toISOString().slice(0, 10);
+
     var today = new Date();
-    var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
+    // var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
     // var date2 = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
     // var time = today.getHours() + ":" + today.getMinutes();
     // var dateTime = date2 + ' ' + time;
@@ -873,6 +878,7 @@ function pay(button) {
 
     db.collection('sales').doc(date).collection("items").add({
         items: checkoutData,
+        type: "Card",
         total: document.getElementById("lbltotalprice").innerHTML,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(docRef => {
@@ -942,15 +948,16 @@ function printReceiptCash() {
 }
 
 function startPrompt() {
-    var today = new Date();
-    var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    var dateTime = date + ' ' + time;
+    let today = new Date().toISOString().slice(0, 10);
+    // var today = new Date();
+    // var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    // var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    // var dateTime = date + ' ' + time;
 
     if (confirm("Start sales")) {
-        db.collection('sales').doc(date).set({
+        db.collection('sales').doc(today).set({
             start: firebase.firestore.FieldValue.serverTimestamp(),
-            staff: 'Toyosi'
+            staff: sellerName
         }).then(docRef => {
             alert('Have a great day');
             console.log('created day with docId= ' + docRef);
@@ -976,11 +983,13 @@ function startPrompt() {
 }
 
 function endPrompt() {
-    var today = new Date();
-    var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
+    let today = new Date().toISOString().slice(0, 10);
+
+    // var today = new Date();
+    // var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate().padStart(2, '0');
 
     if (confirm("End today sales")) {
-        db.collection('sales').doc(date).update({
+        db.collection('sales').doc(today).update({
             end: firebase.firestore.FieldValue.serverTimestamp(),
         }).then(docRef => {
             console.log('created day with docId= ' + docRef);
@@ -1007,7 +1016,7 @@ function autoRefresh(t) {
 
 
 function check() {
-    const total = parseInt(document.getElementById("totalAmount").value);
+    const total = parseInt($("#totalAmount").val());
     const given = parseInt(document.getElementById("givenTxt").innerHTML);
     const btn = document.getElementById("cashPayBtn");
 
@@ -1018,4 +1027,7 @@ function check() {
     }
 }
 
-check();
+// $('#getSalesForm').submit(function (e) {
+//     e.preventDefault();
+
+// });

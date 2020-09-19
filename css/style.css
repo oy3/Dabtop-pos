@@ -21,6 +21,15 @@
     content: counter(Serial);
 }
 
+#salesTbl td.details-control {
+    background: url('../images/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+
+#salesTbl tr.shown td.details-control {
+    background: url('../images/details_close.png') no-repeat center center;
+}
+
 /*custom font*/
 
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
@@ -433,12 +442,12 @@ form .input-error {
     color: black;
 }
 
-#receiptPreview img{
+#receiptPreview img {
     width: auto;
     height: 60px;
 }
 
-#receiptPreviewCash img{
+#receiptPreviewCash img {
     width: auto;
-    height: 60px; 
+    height: 60px;
 }
