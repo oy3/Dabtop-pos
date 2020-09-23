@@ -61,7 +61,7 @@ loginForm?.addEventListener('submit', (e) => {
                 if (idTokenResult.claims.admin == true) {
                     // Show admin UI.
                     btn.removeAttribute("disabled");
-                    auth.signOut();
+                    // auth.signOut();
                     redirectAdmin();
                 } else {
                     // Show regular user UI.
