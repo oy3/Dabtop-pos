@@ -96,16 +96,16 @@
 
                         <div class="row"
                             style="color: white; text-align: center; padding-top: 10px; padding-bottom: 10px;">
-                            <div class="col-xs-2 bg-primary">Cashier on Duty <h5 id="cashier"></h5>
+                            <!-- <div class="col-xs-2 bg-primary">Cashier on Duty <h5 id="cashier"></h5>
+                            </div> -->
+                            <div class="col-xs-6 label-info">Total amount for day <h5 id="amount"></h5>
                             </div>
-                            <div class="col-xs-3 label-info">Total amount for day <h5 id="amount"></h5>
+                            <div class="col-xs-6 label-warning">Number of sales made<h5 id="no_orders"></h5>
                             </div>
-                            <div class="col-xs-3 label-warning">No. of made sales <h5 id="no_orders"></h5>
-                            </div>
-                            <div class="col-xs-2 label-success">Start sales time <h5 id="start"></h5>
+                            <!-- <div class="col-xs-2 label-success">Start sales time <h5 id="start"></h5>
                             </div>
                             <div class="col-xs-2 label-danger">Stop sales time <h5 id="end"></h5>
-                            </div>
+                            </div> -->
                         </div>
 
                         <h3 class="fs-title">Today's Sales</h3>
@@ -114,6 +114,7 @@
                             <thead">
                                 <tr>
                                     <th></th>
+                                    <th>Cashier on Duty</th>
                                     <th>Sold Timestamp</th>
                                     <th>No. of Items</th>
                                     <th>Payment type</th>
@@ -160,83 +161,75 @@
             e.preventDefault();
 
             var getDate = salesForm['datepicker'].value;
-
             var datas = new Array();
             var totalAmount = new Array();
 
-            var docRef = db.collection("sales").doc(getDate);
+            var salesRef = db.collection("sales");
+            salesRef.where("date", "==", getDate).onSnapshot(function (snapshot) {
+                snapshot.forEach(function (doc) {
+                    var amount = parseInt(doc.data().total);
+                    totalAmount.push([amount]);
 
-            docRef.onSnapshot(function (snapshot) {
-                datas = [];
+                    datas.push([
+                        "",
+                        doc.data().cashier[1],
+                        (doc.data().timestamp).toDate().toLocaleTimeString(),
+                        doc.data().items.length,
+                        doc.data().type,
+                        amount.toLocaleString(),
+                        doc.data().items]);
+                });
 
-                $("#cashier").html(snapshot.data().staff);
-                $("#start").html((snapshot.data().start).toDate().toLocaleTimeString());
-                $("#end").html((snapshot.data().end).toDate().toLocaleTimeString());
+                var sum = 0;
+                for (var i = 0, len = totalAmount.length; i < len; i++) {
+                    sum += totalAmount[i][0];
+                }
 
-                docRef.collection('items').onSnapshot(function (querySnapshot) {
-                    querySnapshot.forEach(function (doc) {
+                $("#amount").html("₦" + sum.toLocaleString());
+                $("#no_orders").html(datas.length);
 
-                        var amount = parseInt(doc.data().total);
+                const salesTable = $('#salesTbl').DataTable({
+                    data: datas,
+                    destroy: true,
+                    order: [2, "desc"],
+                    columns: [
+                        {
+                            "className": 'details-control',
+                            "orderable": false,
+                            "data": null,
+                            "defaultContent": ''
+                        },
+                        { title: 'Cashier on Duty' },
+                        { title: 'Sold Timestamp' },
+                        { title: 'No. of Items' },
+                        { title: 'Payment type' },
+                        { title: 'Amount (&#8358;)' },
+                        { title: 'items', "visible": false }
+                    ]
+                });
+                salesTable.clear();
+                salesTable.rows.add(datas);
+                salesTable.draw();
 
-                        totalAmount.push([amount]);
-                        datas.push([
-                            "",
-                            (doc.data().timestamp).toDate().toLocaleTimeString(),
-                            doc.data().items.length,
-                            doc.data().type,
-                            doc.data().total.toLocaleString(),
-                            doc.data().items]);
-                    });
+                $('#salesTbl tbody').on('click', 'td.details-control', function () {
+                    var tr = $(this).closest('tr');
+                    var row = salesTable.row(tr);
 
-                    var sum = 0;
-                    for (var i = 0, len = totalAmount.length; i < len; i++) {
-                        sum += totalAmount[i][0];
+                    if (row.child.isShown()) {
+                        // This row is already open - close it
+                        row.child.hide();
+                        tr.removeClass('shown');
                     }
-
-                    $("#amount").html("₦" + sum.toLocaleString());
-                    $("#no_orders").html(datas.length);
-
-                    const salesTable = $('#salesTbl').DataTable({
-                        data: datas,
-                        destroy: true,
-                        order: [1, "asc"],
-                        columns: [
-                            {
-                                "className": 'details-control',
-                                "orderable": false,
-                                "data": null,
-                                "defaultContent": ''
-                            },
-                            { title: 'Sold Timestamp' },
-                            { title: 'No. of Items' },
-                            { title: 'Payment type' },
-                            { title: 'Amount (&#8358;)' },
-                            { title: 'items', "visible": false }
-                        ]
-                    });
-                    salesTable.clear();
-                    salesTable.rows.add(datas);
-                    salesTable.draw();
-
-                    $('#salesTbl tbody').on('click', 'td.details-control', function () {
-                        var tr = $(this).closest('tr');
-                        var row = salesTable.row(tr);
-
-                        if (row.child.isShown()) {
-                            // This row is already open - close it
-                            row.child.hide();
-                            tr.removeClass('shown');
-                        }
-                        else {
-                            // Open this row
-                            row.child(format(row.data()[5])).show();
-                            tr.addClass('shown');
-                        }
-                    });
+                    else {
+                        // Open this row
+                        row.child(format(row.data()[6])).show();
+                        tr.addClass('shown');
+                    }
                 });
             });
 
         });
+
         function format(d) {
             var html = "<table cellpadding='5' cellspacing='0' border='1' style='padding-left:50px;'> <thead> <tr> <th>Product Name</th> <th>Quantity</th> <th>Price</th> </tr> </thead> <tbody>";
 
@@ -251,25 +244,7 @@
             return html;
         }
 
-
         window.addEventListener('load', function () {
-            // auth.onAuthStateChanged(user => {
-            //     user.getIdTokenResult().then((idTokenResult) => {
-            //         // Confirm the user is an Admin.
-            //         if (!!idTokenResult.claims.admin) {
-            //             // Show admin UI.
-            //             window.open('index.html');
-            //             window.parent.close();
-            //         } else {
-            //             // Show regular user UI.
-            //             window.open('sales.html');
-            //             window.parent.close();
-            //         }
-            //     }).catch((error) => {
-            //         console.log(error);
-            //     });
-            // });
-
             auth.onAuthStateChanged(user => {
                 if (!user) {
                     // User isn't logged in.

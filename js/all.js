@@ -66,7 +66,8 @@ loginForm?.addEventListener('submit', (e) => {
                     // window.parent.close();
                 } else {
                     // Show regular user UI.
-                    startPrompt();
+                    // startPrompt();
+                    window.location.replace("cashier/index.html");
                     btn.removeAttribute("disabled");
 
                     // window.open('pos.html');

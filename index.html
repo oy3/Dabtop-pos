@@ -131,6 +131,16 @@
                          </div>
                     </div>
                </div>
+
+               <br><br><br><br>
+
+               <div class="row">
+                    <div class="col-sm-6">
+                         <div class="modules">
+                              <h4><a href="#">Add New Cashier</a></h4>
+                         </div>
+                    </div>
+               </div>
           </div>
      </section>
 
@@ -171,7 +181,7 @@
                               // Confirm the user is an Admin.
                               if (idTokenResult.claims.admin == false) {
                                    // Show staff UI.
-                                   window.location.replace("pos.html");
+                                   window.location.replace("cashier/index.html");
                                    console.log(idTokenResult);
                               }
                          }).catch((error) => {
