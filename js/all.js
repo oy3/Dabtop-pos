@@ -2,6 +2,7 @@
 
 var checkoutData = [];
 var dataSet = new Array();
+var qtyData = new Array();
 
 var currentUserUid;
 var sellerName;
@@ -12,7 +13,7 @@ auth.onAuthStateChanged(function (user) {
         sellerName = user.displayName;
 
         // user.updateProfile({
-        //     displayName: "Oyeyinka Temitope"
+        //     displayName: "Feranmi Jacob"
         // }).then(function () {
         //     // Update successful.
         //     console.log("success", user.displayName);
@@ -210,12 +211,18 @@ function getTableData() {
                 doc.data().productQuanity,
                 doc.data().productCostPrice,
                 doc.data().productSellingPrice]);
+
+            qtyData.push({
+                uid: doc.id,
+                id: doc.data().productNumber,
+                product: doc.data().productName,
+                quantity: doc.data().productQuanity
+            });
         });
 
         // console.log("Inventory Array: ", datas);
         var source = snapshot.metadata.fromCache ? "local cache" : "server";
         // console.log("Data came from " + source);
-
 
         const inventoryTable = $('#viewTable').DataTable({
             data: datas,
@@ -229,7 +236,7 @@ function getTableData() {
                 { title: 'Size(Kg)' },
                 { title: 'Quantity' },
                 { title: 'Cost Price(&#8358;)' },
-                { title: 'Seling Price(&#8358;)' },
+                { title: 'Selling Price(&#8358;)' },
                 { title: 'Action' },
             ],
             columnDefs: [{
@@ -252,7 +259,7 @@ function getTableData() {
         $('#viewTable tbody ').on('click', 'tr', function () {
 
             var data = inventoryTable.row(this).data();
-            console.log('You clicked on row with item number:: ' + data);
+            // console.log('You clicked on row with item number:: ' + data);
 
             const editForm = document.querySelector('#editForm');
             const uid = editForm['uid'];
@@ -293,7 +300,8 @@ function getTableData() {
                             productCostPrice: cost.value,
                             productSellingPrice: selling.value,
                             addedTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                            adminUid: currentUserUid
+                            adminUid: currentUserUid,
+                            action: 'Item Edit'
                         }).then(function () {
                             $('#spinner').addClass('hide');
                             saveBtn.removeAttribute("disabled");
@@ -378,6 +386,8 @@ function getTableData() {
 
             });
         });
+
+
     });
 
 }
@@ -885,6 +895,7 @@ function pay(button) {
     }).then(docRef => {
         // console.log('Added  docId to server= ' + docRef.id);
         // console.log('Added  docId to server');
+        checkoutData = [];
     }).catch(function (error) {
         button.removeAttribute("disabled");
         $(this.spinner).addClass('hide');

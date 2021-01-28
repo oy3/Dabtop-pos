@@ -3,7 +3,7 @@
 
 <head>
 
-    <title>DABTOP</title>
+    <title>DABTOP POS</title>
 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
@@ -35,12 +35,19 @@
 
     <section>
         <div class="row">
-            <div class="col-md-9 col-md-offset-1">
+            <div class="col-md-10">
 
                 <form id="view_invetory_form" class="form-horizontal">
 
-                    <h2 class="fs-title"><a href="index.html">DABTOP</a></h2>
-                    <h3 class="fs-subtitle">VIEW INVENTORY</h3>
+                    <div class="col-md-11">
+                        <h2 class="fs-title"><a href="index.html">DABTOP</a></h2>
+                        <h3 class="fs-subtitle"> INVENTORY</h3>
+                    </div>
+
+                    <span class="col-md-1 text-warning h3" type='button' data-toggle='modal'
+                        data-target='#alertModal'><i class="fa fa-bell"></i></span>
+
+
 
                     <table id="viewTable" class="table">
                         <thead">
@@ -66,6 +73,32 @@
 
 
         <!-- Modals -->
+        <!-- Alert -->
+        <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="alertModalLabel">Low stock</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <span id="qtyDetails"></span>
+
+                    </div>
+                    <!-- <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                        <button type="button" id="deleteBtn" class="btn btn-danger">
+                            <span id="" class="spinner-border spinner-border-sm hide" role="status"
+                                aria-hidden="true"></span> Delete
+                        </button>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
         <!-- Edit -->
         <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
             <div class="modal-dialog" role="document">
@@ -198,6 +231,36 @@
                 display.value = calculator.displayValue;
             }
 
+
+            $('#alertModal').on('shown.bs.modal', function () {
+                qtyData.forEach((product, index) => {
+                    if (product.quantity <= 0) {
+                        // console.log(product.product, "with quantity of", product.quantity, "left in stock.");
+
+                        var cont = document.getElementById('qtyDetails');
+                        var ul = document.createElement('ul');
+                        // ul.setAttribute('style', 'padding: 0; margin: 0;');
+                        // ul.setAttribute('id', 'theList');
+
+                        var li = document.createElement('li');
+                        var pn = document.createElement('span');
+                        var pq = document.createElement('div');
+                        // pn.setAttribute('style', 'color: red;');
+                        // pq.setAttribute('style', 'color: purple;');
+                        pn.innerHTML = product.product;
+                        pq.innerHTML = product.quantity;
+
+                        li.innerHTML = ` <span style='color:purple;'>${product.product}</span> with quantity of <span style='color:red;'>${product.quantity}</span> left in stock.`;
+
+                        // li.setAttribute('style', 'display: block;');
+                        ul.appendChild(li);
+
+
+                        cont.appendChild(ul);
+
+                    }
+                });
+            });
 
         });
     </script>

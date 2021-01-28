@@ -413,8 +413,8 @@
                         // Confirm the user is an Admin.
                         if (idTokenResult.claims.admin == true) {
                             // Show admin UI.
-                            // auth.signOut();
                             redirectAdmin();
+                            // redirectAdmin2();
                         }
                     }).catch((error) => {
                         console.log(error);

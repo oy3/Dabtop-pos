@@ -61,8 +61,8 @@ loginForm?.addEventListener('submit', (e) => {
                 if (idTokenResult.claims.admin == true) {
                     // Show admin UI.
                     btn.removeAttribute("disabled");
-                    // auth.signOut();
                     redirectAdmin();
+                    // redirectAdmin2();
                 } else {
                     // Show regular user UI.
                     db.collection('authLogs').add({
@@ -481,8 +481,18 @@ function pay(button, type) {
         date: date,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(docRef => {
-        // console.log('Added  docId to server= ' + docRef.id);
-        checkoutData = [];
+        console.log('Added ' + docRef.id + ' to = ' + docRef);
+        // checkoutData = [];
+
+        for (let item in checkoutData) {
+
+            let itemId = checkoutData[item].id;
+            var checkoutQty = checkoutData[item].quantity;
+            console.log(`Checkout data: ${checkoutData[item].id} with quantity => ${checkoutData[item].quantity}`);
+
+            updateInventory(itemId, checkoutQty);
+        }
+
     }).catch(function (error) {
         button.removeAttribute("disabled");
         $(this.spinner).addClass('hide');
@@ -513,6 +523,47 @@ function pay(button, type) {
     } else {
         console.log("Invalid Payment Type");
     }
+}
+
+function updateInventory(itemId, checkoutQty) {
+    db.collection("inventories").where("productNumber", "==", itemId).get()
+        .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+
+                var inventoryQty = parseInt(doc.data().productQuanity);
+                console.log("Inventory data: ", doc.data().productNumber, " with quantity => ", inventoryQty);
+
+                var sub = inventoryQty - checkoutQty;
+                console.log(`Subtract checkout qty from inventory qty for item ${doc.data().productNumber} = ${sub}`);
+
+
+                db.collection("inventories").doc(doc.id).update({
+                    productQuanity: sub
+                }).then(function () {
+                    return db.collection('inventories').doc(doc.id).collection("log").add({
+                        productQuanity: sub,
+                        addedTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                        cashierUid: currentUserUid,
+                        action: 'Quantity Change',
+                        productName: doc.data().productName,
+                        productSize: doc.data().productSize,
+                        productCostPrice: doc.data().productCostPrice,
+                        productSellingPrice: doc.data().productSellingPrice
+                    }).then(function () {
+                        console.log("All successful!!");
+                        checkoutData = [];
+                    }).catch(function (error) {
+                        console.log("Error getting documents: ", error);
+                    });
+                }).catch(function (error) {
+                    console.log("Error getting documents: ", error);
+                });
+
+
+            });
+        }).catch(function (error) {
+            console.log("Error getting documents: ", error);
+        });
 }
 
 function forCash(button, now) {
@@ -603,13 +654,17 @@ function endPrompt() {
 }
 
 function redirectAdmin() {
-    window.location.replace("../index.html");
-    // if (confirm("Access is denied, Redirect to Admin Login Page?")) {
-    //     window.location.replace("https://dabtop-pos.vercel.app/");
+    auth.signOut();
+    if (confirm("Access is denied, Redirect to Admin Login Page?")) {
+        window.location.replace("https://dabtop-pos.vercel.app/");
 
-    // } else {
-    //     location.reload();
-    // }
+    } else {
+        location.reload();
+    }
+}
+
+function redirectAdmin2() {
+    window.location.replace("../index.html");
 }
 
 function clearRows() {
